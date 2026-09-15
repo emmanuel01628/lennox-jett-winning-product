@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --ink: #171A21;
+  --ink-soft: #5B6270;
+  --purple: #6C4FF2;
+  --purple-dim: #EFEAFF;
+  --orange: #FF6B35;
+  --line: #E7E7ED;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: linear-gradient(135deg, var(--purple-dim), #E3F1FD);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--ink);
+  padding: 24px;
+}
+
+.auth-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 60px rgba(20, 20, 40, 0.12);
+}
+
+.auth-logo {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 4px;
+  text-decoration: none;
+  display: block;
+  color: var(--ink);
+}
+
+.auth-logo span { color: var(--orange); }
+
+.auth-card h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 22px;
+  text-align: center;
+  margin: 12px 0 24px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  margin-top: 16px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+}
+
+input:focus { outline: none; border-color: var(--purple); }
+
+button {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+button:hover { background: #E5592A; }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.switch-link {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.switch-link a { color: var(--purple); font-weight: 600; text-decoration: none; }
+
+.error-msg {
+  display: none;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #FDE5E5;
+  color: #C0392B;
+  border-radius: 8px;
+  font-size: 13px;
+}

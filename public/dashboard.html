@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your list — Lennox Jett</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #171A21;
+    --ink-soft: #5B6270;
+    --purple: #6C4FF2;
+    --purple-dim: #EFEAFF;
+    --orange: #FF6B35;
+    --green: #1FAA70;
+    --green-dim: #E1F7ED;
+    --blue: #1E88E5;
+    --blue-dim: #E3F1FD;
+    --yellow: #FFB703;
+    --yellow-dim: #FFF3D6;
+    --pink: #F2409A;
+    --pink-dim: #FDE5F1;
+    --card: #FAFAFC;
+    --line: #E7E7ED;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Space Grotesk', sans-serif; color: var(--ink); background: #fff; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px; }
+  .logo span { color: var(--orange); }
+  .nav-right { display: flex; align-items: center; gap: 14px; font-size: 13.5px; color: var(--ink-soft); }
+  #logoutBtn { background: none; border: 2px solid var(--line); border-radius: 100px; padding: 8px 16px; font-family: inherit; font-weight: 600; cursor: pointer; color: var(--ink); }
+  h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 28px; margin: 36px 0 6px; }
+  .subhead { color: var(--ink-soft); margin-bottom: 28px; }
+  .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 48px; }
+  .product-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+  .niche-tag { display: inline-block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; padding: 4px 10px; border-radius: 100px; margin-bottom: 8px; }
+  .tag-fashion { background: var(--pink-dim); color: var(--pink); }
+  .tag-gadget { background: var(--blue-dim); color: var(--blue); }
+  .tag-fitness { background: var(--green-dim); color: var(--green); }
+  .tag-pet { background: var(--yellow-dim); color: #8A6200; }
+  .product-card h3 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+  .product-card p { font-size: 14px; color: var(--ink-soft); margin-bottom: 14px; }
+  .card-stats { display: flex; gap: 20px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .stat-block .num { font-family: 'Fraunces', serif; font-weight: 700; font-size: 17px; }
+  .stat-block .lbl { font-size: 11.5px; color: var(--ink-soft); }
+  .locked-banner { background: var(--purple-dim); border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 40px; }
+  .locked-banner a { display: inline-block; margin-top: 12px; background: var(--orange); color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 100px; font-weight: 700; font-size: 14px; }
+  .state-msg { text-align: center; padding: 60px 0; color: var(--ink-soft); }
+  @media (max-width: 640px) { .product-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="logo">Lennox<span>·</span>Jett</div>
+    <div class="nav-right">
+      <span id="userEmail"></span>
+      <button id="logoutBtn">Sign out</button>
+    </div>
+  </nav>
+
+  <div id="content">
+    <div class="state-msg">Loading your account…</div>
+  </div>
+</div>
+
+<script>
+  async function loadDashboard() {
+    const content = document.getElementById('content');
+    try {
+      const meRes = await fetch('/api/me');
+      if (!meRes.ok) {
+        window.location.href = '/login.html';
+        return;
+      }
+      const me = await meRes.json();
+      document.getElementById('userEmail').textContent = me.email;
+
+      const prodRes = await fetch('/api/products');
+      const prodData = await prodRes.json();
+
+      if (!prodRes.ok) {
+        content.innerHTML = `<div class="state-msg">${prodData.error || 'Could not load products.'}</div>`;
+        return;
+      }
+
+      const tagClass = { fashion: 'tag-fashion', gadget: 'tag-gadget', fitness: 'tag-fitness', pet: 'tag-pet' };
+
+      let cardsHtml = prodData.products.map(p => `
+        <div class="product-card">
+          <span class="niche-tag ${tagClass[p.niche]}">${p.niche}</span>
+          <h3>${p.name}</h3>
+          <p>${p.note}</p>
+          <div class="card-stats">
+            <div class="stat-block"><div class="num">${p.markup}</div><div class="lbl">est. markup</div></div>
+            <div class="stat-block"><div class="num">${p.competition}</div><div class="lbl">competition</div></div>
+          </div>
+        </div>
+      `).join('');
+
+      content.innerHTML = `
+        <h1>Your winning product list</h1>
+        <p class="subhead">Signed in as ${me.email}</p>
+        ${!me.has_paid ? `
+          <div class="locked-banner">
+            <div>You're signed in, but this list previews with limited detail until you complete a purchase.</div>
+            <a href="/#pricing">See pricing</a>
+          </div>
+        ` : ''}
+        <div class="product-grid">${cardsHtml}</div>
+      `;
+    } catch (err) {
+      content.innerHTML = `<div class="state-msg">Something went wrong loading your account.</div>`;
+    }
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/login.html';
+  });
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
